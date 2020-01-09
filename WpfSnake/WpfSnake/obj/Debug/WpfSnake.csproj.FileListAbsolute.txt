@@ -1,0 +1,15 @@
+T:\GitHub\WPF_SnakeGame\WpfSnake\WpfSnake\obj\Debug\WpfSnake.csprojAssemblyReference.cache
+T:\GitHub\WPF_SnakeGame\WpfSnake\WpfSnake\obj\Debug\App.g.cs
+T:\GitHub\WPF_SnakeGame\WpfSnake\WpfSnake\obj\Debug\WpfSnake_MarkupCompile.cache
+T:\GitHub\WPF_SnakeGame\WpfSnake\WpfSnake\obj\Debug\MainWindow.g.cs
+T:\GitHub\WPF_SnakeGame\WpfSnake\WpfSnake\obj\Debug\GeneratedInternalTypeHelper.g.cs
+T:\GitHub\WPF_SnakeGame\WpfSnake\WpfSnake\obj\Debug\WpfSnake_MarkupCompile.lref
+T:\GitHub\WPF_SnakeGame\WpfSnake\WpfSnake\bin\Debug\WpfSnake.exe.config
+T:\GitHub\WPF_SnakeGame\WpfSnake\WpfSnake\bin\Debug\WpfSnake.exe
+T:\GitHub\WPF_SnakeGame\WpfSnake\WpfSnake\bin\Debug\WpfSnake.pdb
+T:\GitHub\WPF_SnakeGame\WpfSnake\WpfSnake\obj\Debug\MainWindow.baml
+T:\GitHub\WPF_SnakeGame\WpfSnake\WpfSnake\obj\Debug\WpfSnake.g.resources
+T:\GitHub\WPF_SnakeGame\WpfSnake\WpfSnake\obj\Debug\WpfSnake.Properties.Resources.resources
+T:\GitHub\WPF_SnakeGame\WpfSnake\WpfSnake\obj\Debug\WpfSnake.csproj.GenerateResource.cache
+T:\GitHub\WPF_SnakeGame\WpfSnake\WpfSnake\obj\Debug\WpfSnake.exe
+T:\GitHub\WPF_SnakeGame\WpfSnake\WpfSnake\obj\Debug\WpfSnake.pdb
