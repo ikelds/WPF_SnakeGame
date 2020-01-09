@@ -13,6 +13,7 @@ namespace WpfSnake.ViewModel
     {
         public int CanvasWidth { get; set; }
         public int CanvasHeight { get; set; }
+        public int CountFoodOnField { get; set; }
         public static ObservableCollection<Figure> elements { get; set; }
 
         int snakeHeadX = 5;
@@ -29,13 +30,9 @@ namespace WpfSnake.ViewModel
         int numberCellsVert;
         bool foodAdded = false;
         Random randomPos;
-
-
         int currSnakeLength;
         enum DirectionSnake { Left, Right, Up, Down };
         DirectionSnake directionSnake;
-
-
 
         public RelayCommand UpCommand { get; set; }
         public RelayCommand DownCommand { get; set; }
@@ -45,20 +42,20 @@ namespace WpfSnake.ViewModel
 
         public GameViewModel()
         {
-            CanvasWidth = 600;
-            CanvasHeight = 600;
+            CanvasWidth = 400;
+            CanvasHeight = 400;
             currPosX = 0;
             currPosY = 0;
             sizeRect = 20;
             currColor = "Black";
             directionSnake = DirectionSnake.Right;
             backgroundOk = false;
+            CountFoodOnField = 3;
 
             numberCellsHoriz = CanvasWidth / sizeRect;
             numberCellsVert = CanvasHeight / sizeRect;
 
             randomPos = new Random();
-
 
             elements = new ObservableCollection<Figure>();
             System.Windows.Threading.DispatcherTimer gameTickTimer = new System.Windows.Threading.DispatcherTimer();
@@ -90,7 +87,6 @@ namespace WpfSnake.ViewModel
                     }
                     currPosX = 0;
                     currPosY += sizeRect;
-
                 }
 
                 backgroundOk = true;
@@ -106,72 +102,71 @@ namespace WpfSnake.ViewModel
                     Left = snakeHeadX * sizeRect,
                     Top = snakeHeadY * sizeRect,
                     Color = "Green",
-                    isHead = false,
+                    IsHead = false,
                     ElementType = "Snake"
                 });
 
                 currSnakeLength++;
             }
 
-
-
             // Запустим таймер, который будет периодически вызывать метод DrawPartSnake - для движения змейки.
             gameTickTimer.Tick += DrawPartSnake;
             gameTickTimer.Interval = TimeSpan.FromMilliseconds(SnakeStartSpeed);
             gameTickTimer.IsEnabled = true;
 
+            // Добавим еду на игровое поле.
             AddFood();
         }
 
+        // Если поймали еду, увеличить змейку на один элемент.
         void AddPartSnake()
         {
-            switch (directionSnake)
-            {
-                case DirectionSnake.Right:
-                    snakeHeadX++;
-                    break;
-                case DirectionSnake.Left:
-                    snakeHeadX--;
-                    break;
-                case DirectionSnake.Down:
-                    snakeHeadY++;
-                    break;
-                case DirectionSnake.Up:
-                    snakeHeadY--;
-                    break;
-            }
-
             elements.Add(new SnakePart
             {
                 Left = snakeHeadX * sizeRect,
                 Top = snakeHeadY * sizeRect,
-                Color = "Purple"
+                Color = "DeepGreen"
             });
-            //elements.Add(new SnakePart { Left = foodPosX * sizeRect, Top = foodPosY * sizeRect, Color = "Purple" });
         }
 
         void CheckToCatchFood()
         {
-            int tempPosX;
-            int tempPosY;
+            int tempPosSnakeX;
+            int tempPosSnakeY;
+
+            int tempPosFoodX;
+            int tempPosFoodY;
 
             for (int i = 0; i < elements.Count(); i++)
             {
                 if (elements[i].GetType() == typeof(SnakePart))
                 {
-                    tempPosX = elements[i].Left / sizeRect;
-                    tempPosY = elements[i].Top / sizeRect;
+                    SnakePart sp = (SnakePart)elements[i];
 
-                    //MessageBox.Show(tempPosX.ToString() + " " + tempPosY.ToString());
-                    //MessageBox.Show("В цикле");
-                    if (tempPosX == foodPosX && tempPosY == foodPosY)
+                    if (sp.IsHead == true)
                     {
-                        //MessageBox.Show("Наехали на еду");
-                        AddPartSnake();
+                        tempPosSnakeX = elements[i].Left / sizeRect;
+                        tempPosSnakeY = elements[i].Top / sizeRect;
 
+                        for (int j = 0; j < elements.Count(); j++)
+                        {
+                            if (elements[j].GetType() == typeof(Food))
+                            {
+                                Food fd = (Food)elements[j];
+
+                                tempPosFoodX = elements[j].Left / sizeRect;
+                                tempPosFoodY = elements[j].Top / sizeRect;
+
+                                if (tempPosSnakeX == tempPosFoodX && tempPosSnakeY == tempPosFoodY)
+                                {
+                                    //MessageBox.Show("Наехали на еду");
+                                    AddPartSnake();
+                                    //elements.RemoveAt(j);
+                                    elements.Remove(fd);
+                                }
+                            }
+                        }
                     }
-
-
                 }
             }
         }
@@ -193,7 +188,6 @@ namespace WpfSnake.ViewModel
         {
             MessageBox.Show(foodPosX.ToString() + " " + foodPosY.ToString());
         }
-
 
         // Метод который удаляет последний элемент змейки и добавляет новый елемнт в начало
         // в зависимости от направления.
@@ -231,12 +225,9 @@ namespace WpfSnake.ViewModel
             {
                 if (elements[i].GetType() == typeof(SnakePart))
                 {
-
                     elements[i].Color = "LightGreen";
                 }
             }
-
-            //elements.FindAll()
 
             // Добавив новый элемент в начало змейки с цветом Темно зеленый.
             elements.Add(new SnakePart
@@ -244,25 +235,14 @@ namespace WpfSnake.ViewModel
                 Left = snakeHeadX * sizeRect,
                 Top = snakeHeadY * sizeRect,
                 Color = "DarkGreen",
-                ElementType = "Snake"
-            });
+                ElementType = "Snake",
+                IsHead = true
 
+            }); ;
+
+            // Проверим не наехали ли на еду.
             CheckToCatchFood();
         }
-
-        private void btn_DelFood(object sender)
-        {
-            //essageBox.Show("Вверх");
-            //directionSnake = DirectionSnake.Up;
-
-            foreach (Figure f in elements)
-            {
-                MessageBox.Show((f.GetType() == typeof(SnakePart)).ToString());
-            }
-
-        }
-
-
 
         private void btn_UpPressed(object sender)
         {
