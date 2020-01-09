@@ -7,7 +7,7 @@
         xmlns:vm="clr-namespace:WpfSnake.ViewModel"
         xmlns:model="clr-namespace:WpfSnake.Model"
         mc:Ignorable="d"
-      Title="Snake - черновик" SizeToContent="WidthAndHeight" Height="500" Width="500"
+      Title="Snake" SizeToContent="WidthAndHeight" Height="500" Width="500"
         WindowStartupLocation="CenterScreen">
     <Window.InputBindings>
         <KeyBinding Command="{Binding UpCommand}" Key="Up"/>

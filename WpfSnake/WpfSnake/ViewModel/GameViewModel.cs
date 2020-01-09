@@ -14,11 +14,14 @@ namespace WpfSnake.ViewModel
         public int CanvasWidth { get; set; }
         public int CanvasHeight { get; set; }
         public int CountFoodOnField { get; set; }
+        public int SnakeSpeed { get; set; }
         public static ObservableCollection<Figure> elements { get; set; }
+
+        System.Windows.Threading.DispatcherTimer gameTickTimer;
 
         int snakeHeadX = 5;
         int snakeHeadY = 5;
-        const int SnakeStartSpeed = 500;
+        
         int sizeRect;
         int currPosX;
         int currPosY;
@@ -51,6 +54,7 @@ namespace WpfSnake.ViewModel
             directionSnake = DirectionSnake.Right;
             backgroundOk = false;
             CountFoodOnField = 3;
+            SnakeSpeed = 500;
 
             numberCellsHoriz = CanvasWidth / sizeRect;
             numberCellsVert = CanvasHeight / sizeRect;
@@ -58,7 +62,7 @@ namespace WpfSnake.ViewModel
             randomPos = new Random();
 
             elements = new ObservableCollection<Figure>();
-            System.Windows.Threading.DispatcherTimer gameTickTimer = new System.Windows.Threading.DispatcherTimer();
+            gameTickTimer = new System.Windows.Threading.DispatcherTimer();
 
             UpCommand = new RelayCommand(new Action<object>(btn_UpPressed));
             DownCommand = new RelayCommand(new Action<object>(btn_DownPressed));
@@ -109,13 +113,23 @@ namespace WpfSnake.ViewModel
                 currSnakeLength++;
             }
 
+            // Добавим заданное кол-во еды на игровое поле.
+            for (int i = 0; i < CountFoodOnField; i++)
+            {
+                AddFood();
+            }
+
             // Запустим таймер, который будет периодически вызывать метод DrawPartSnake - для движения змейки.
             gameTickTimer.Tick += DrawPartSnake;
-            gameTickTimer.Interval = TimeSpan.FromMilliseconds(SnakeStartSpeed);
+            gameTickTimer.Interval = TimeSpan.FromMilliseconds(SnakeSpeed);
             gameTickTimer.IsEnabled = true;
+        }
 
-            // Добавим еду на игровое поле.
-            AddFood();
+        // Метод для увеличения скорости змейки.
+        void IncreaseSpeedSnake()
+        {
+            SnakeSpeed -= 10;
+            gameTickTimer.Interval = TimeSpan.FromMilliseconds(SnakeSpeed);
         }
 
         // Если поймали еду, увеличить змейку на один элемент.
@@ -161,8 +175,12 @@ namespace WpfSnake.ViewModel
                                 {
                                     //MessageBox.Show("Наехали на еду");
                                     AddPartSnake();
-                                    //elements.RemoveAt(j);
+                                    // Удалим найденную еду.
                                     elements.Remove(fd);
+                                    // Добавим новую еду.
+                                    AddFood();
+                                    // Увеличим скорость змейки. 
+                                    IncreaseSpeedSnake();
                                 }
                             }
                         }
@@ -171,17 +189,18 @@ namespace WpfSnake.ViewModel
             }
         }
 
-
         void AddFood()
         {
-            while (!foodAdded)
-            {
-                foodPosX = randomPos.Next(0, numberCellsHoriz);
-                foodPosY = randomPos.Next(0, numberCellsVert);
+            foodPosX = randomPos.Next(0, numberCellsHoriz);
+            foodPosY = randomPos.Next(0, numberCellsVert);
 
-                elements.Add(new Food { Left = foodPosX * sizeRect, Top = foodPosY * sizeRect, Color = "Red" });
-                foodAdded = true;
-            }
+            elements.Add(new Food { Left = foodPosX * sizeRect, Top = foodPosY * sizeRect, Color = "Red" });
+            //foodAdded = true;
+
+            //while (!foodAdded)
+            //{
+
+            //}
         }
 
         private void Test(object sender)
